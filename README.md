@@ -12,9 +12,9 @@ We made this during our first hackathon. It wasn't perfect, but it was ours.
 # 🛠️ What we used
 ## What	Why?
 
-HTML5	 - To build the structure
-Tailwind css  -	To make it look decent
-Vanilla JavaScript - To make it actually work
+> HTML5	 - To build the structure
+> Tailwind css  -	To make it look decent
+> Vanilla JavaScript - To make it actually work
 That's it. Nothing else.
 
 # 🎯 How it actually works
