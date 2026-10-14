@@ -284,8 +284,6 @@ const tools = [
 ];
 
 async function useTool(name, args) {
-  console.log("using", name, args);
-
   if (name == "get_time") {
     return new Date().toString();
   }
