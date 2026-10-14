@@ -5,7 +5,7 @@ utonomous is a chatbot we built for our first hackathon. It's made with plain HT
 We didn't know much when we started. But we kept working on it, fixing things, breaking things, and fixing them again. This is what came out of it.
 
 # 📖 What is this?
-Autonomous is a simple chatbot that runs in your browser. You type something, it replies. That's it. No backend, no server, no AI model behind it — just JavaScript doing its thing.
+Autonomous is a simple chatbot that runs in your browser. You type something, it replies. That's it. No backend, no server, no AI model behind it just JavaScript doing its thing.
 
 We made this during our first hackathon. It wasn't perfect, but it was ours.
 
