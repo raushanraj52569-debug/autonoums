@@ -4,6 +4,9 @@ Autonomous is a chatbot we built for our first hackathon. It's made with plain H
 
 We didn't know much when we started. But we kept working on it, fixing things, breaking things, and fixing them again. This is what came out of it.
 
+![Autonomous Banner](https://github.com/raushanraj52569-debug/autonoums/blob/main/lib/Screenshot%20From%202026-10-15%2000-25-40.png?raw=true)
+
+
 # 📖 What is this?
 Autonomous is a small chatbot that answers questions about GNIOT GIPS — courses, fees, hostel, placements, campus, contact info — everything a new student or parent might want to know.
 
