@@ -1,6 +1,6 @@
 # Autonomous 🤖
 
-utonomous is a chatbot we built for our first hackathon. It's made with plain HTML, CSS, and vanilla JavaScript — no frameworks, no libraries, nothing fancy. Just the basics we knew at the time, and a lot of late-night Googling.
+Autonomous is a chatbot we built for our first hackathon. It's made with plain HTML, CSS, and vanilla JavaScript — no frameworks, no libraries, nothing fancy. Just the basics we knew at the time, and a lot of late-night Googling.
 
 We didn't know much when we started. But we kept working on it, fixing things, breaking things, and fixing them again. This is what came out of it.
 
