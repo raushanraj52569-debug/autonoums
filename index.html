@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>Autonomous · GNIOT GIPS Assistant</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" href="data:,">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+<style>
+  body {
+    background: #0a0a0a;
+    color: white;
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    position: relative;
+  }
+  #chat::-webkit-scrollbar { width: 6px; }
+  #chat::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }
+  .m { animation: fade .15s ease-out; }
+  @keyframes fade {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .d { animation: blink 1.2s infinite; }
+  .d:nth-child(2) { animation-delay: 0.2s; }
+  .d:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes blink {
+    0%, 80%, 100% { opacity: 0.2; }
+    40% { opacity: 1; }
+  }
+
+  .bg-watermark {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    max-width: 90vw;
+    opacity: 0.06;
+    pointer-events: none;
+    z-index: 0;
+    filter: grayscale(100%);
+  }
+</style>
+</head>
+
+<body class="flex flex-col items-center justify-center p-4 gap-4">
+
+  <svg class="bg-watermark" viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg">
+    <text x="200" y="60" text-anchor="middle" fill="#ffffff"
+          font-family="Arial, sans-serif" font-weight="900" font-size="52" letter-spacing="3">
+      GNIOT
+    </text>
+    <text x="200" y="85" text-anchor="middle" fill="#ffffff"
+          font-family="Arial, sans-serif" font-weight="400" font-size="14" letter-spacing="5">
+      GIPS · GREATER NOIDA
+    </text>
+    <line x1="60" y1="100" x2="340" y2="100" stroke="#ffffff" stroke-width="1.5" />
+  </svg>
+
+  <div class="w-full max-w-xl flex items-center justify-between relative z-10 px-2">
+
+    <div class="flex items-center gap-3">
+      <svg width="52" height="52" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <path d="M50 4 L92 18 L92 55 Q92 82 50 96 Q8 82 8 55 L8 18 Z"
+              fill="#1a1a1a" stroke="#facc15" stroke-width="2.5"/>
+        <path d="M50 12 L84 23 L84 55 Q84 76 50 88 Q16 76 16 55 L16 23 Z"
+              fill="none" stroke="#facc15" stroke-width="1" opacity="0.4"/>
+        <text x="50" y="52" text-anchor="middle" fill="#ffffff"
+              font-family="Arial, sans-serif" font-weight="900" font-size="22" letter-spacing="1">
+          GNIOT
+        </text>
+        <text x="50" y="68" text-anchor="middle" fill="#fde047"
+              font-family="Arial, sans-serif" font-weight="600" font-size="7" letter-spacing="2">
+          GIPS
+        </text>
+        <circle cx="50" cy="26" r="2.5" fill="#facc15"/>
+      </svg>
+
+      <div class="leading-tight">
+        <p class="text-sm font-bold text-white">GNIOT GIPS</p>
+        <p class="text-[10px] text-yellow-400 tracking-widest">GREATER NOIDA</p>
+      </div>
+    </div>
+
+<div class="text-right">
+  <p class="text-[9px] text-gray-500 tracking-[0.2em] uppercase mb-1">made with</p>
+  <div class="flex flex-col items-end gap-1">
+    <span class="flex items-center gap-1.5 text-[11px] text-gray-300 font-medium">
+      Google Gemini
+    </span>
+    <span class="flex items-center gap-1.5 text-[11px] text-gray-300 font-medium">
+      Tailwind CSS
+    </span>
+  </div>
+</div>
+
+  </div>
+
+  <div class="w-full max-w-xl bg-[#111] border border-[#222] rounded-2xl flex flex-col h-[620px] overflow-hidden relative z-10 shadow-2xl">
+
+    <div class="px-4 py-3 border-b border-[#222] flex items-center gap-3">
+      <div class="w-9 h-9 rounded-full bg-[#1f1f1f] flex items-center justify-center text-yellow-400">
+        <i class="fas fa-graduation-cap"></i>
+      </div>
+      <div class="flex-1">
+        <p class="text-sm font-semibold">Autonomous</p>
+        <p class="text-[11px] text-gray-500">ask me anything about GNIOT GIPS</p>
+      </div>
+      <button id="reset" class="text-gray-500 hover:text-yellow-400" title="reset">
+        <i class="fas fa-rotate-right"></i>
+      </button>
+    </div>
+
+    <div id="chat" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
+
+    <div class="p-3 border-t border-[#222]">
+      <div class="flex gap-2">
+        <input
+          id="inp"
+          type="text"
+          placeholder="ask about courses, fees, hostel..."
+          class="flex-1 bg-[#1a1a1a] border border-[#2a2a2a] rounded-full px-4 py-2.5 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-yellow-400"
+        />
+        <button id="go" class="bg-yellow-400 hover:bg-yellow-500 w-11 h-11 rounded-full text-black flex items-center justify-center">
+          <i class="fas fa-paper-plane"></i>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="text-[10px] text-gray-500 relative z-10">
+    Made By <span class="text-yellow-400 font-semibold">Raushan Raj</span>
+  </p>
+
+<script type="module">
+import { GoogleGenAI, Type } from 'https://cdn.jsdelivr.net/npm/@google/genai@latest/+esm';
+
+const API_KEY = "KEY HERE";
+const MODEL = "gemini-3.5-flash-lite";
+
+const ai = new GoogleGenAI({ apiKey: API_KEY });
+
+var chat = document.getElementById("chat");
+var inp = document.getElementById("inp");
+var go = document.getElementById("go");
+var reset = document.getElementById("reset");
+
+let chatSession = null;
+
+const GNIOT_INFO = `
+NAME & IDENTITY:
+- Full name: GNIOT Institute of Professional Studies
+- Short name: GNIOT GIPS or GIPS
+- Part of GNIOT Group of Institutions, founded by Shri Ram Educational Trust, Noida
+- GIPS established: 2020 (operations began 2021)
+- Location: Plot No. 7, Knowledge Park-II, Greater Noida, Uttar Pradesh - 201310
+- Website: gniotips.in
+- Affiliated to: Chaudhary Charan Singh University (CCS University), Meerut
+- ISO 9001:2015 & 14001:2015 Certified
+- Principal: Dr. Savita Mohan
+
+COURSES OFFERED:
+- BBA (Bachelor of Business Administration)
+- BCA (Bachelor of Computer Applications)
+- B.Com (Program)
+- B.Com (Honours) - NEP
+- B.Sc Computer Science
+All courses are 3-year (6-semester) full-time regular programs.
+
+FEES STRUCTURE (total course fees):
+- B.Sc Computer Science: 1.85 Lakh
+- B.Com: 1.70 Lakh
+- B.Com Hons: 2.06 Lakh
+- BBA: 2.76 Lakh
+- BCA: 2.76 Lakh
+
+ELIGIBILITY (for UG courses):
+- BBA / BCA / B.Com / B.Sc: 10+2 with minimum 45% marks for General/OBC, 40% for SC/ST
+- BCA: Mathematics as a mandatory subject in 10+2
+
+ADMISSIONS:
+- Merit-based, through CCS University norms
+- Application fee: 1,200
+- Apply online at gniotips.in or offline at campus
+- Direct admissions available for eligible candidates
+- Contact: 0120-2328214/15/16 | 1800 274 6969
+- Email: principal@gniotips.in
+
+HOSTEL (Shree Ram Hostel):
+- Boys' Hostel: 684 capacity, 298 rooms
+- Girls' Hostel: 399 capacity, 163 rooms
+- Single, double & triple rooms with attached/common bathrooms
+- Furnished rooms with essentials, optional AC/Cooler
+- 24/7 security with biometric access and CCTV
+- High-speed Wi-Fi & full power backup
+- RO drinking water
+- In-house mess with nutritious vegetarian meals
+- Common room with indoor games & TV
+- Laundry, housekeeping, medical support
+- Full-time wardens and faculty mentors
+
+PLACEMENTS (2022-2023 data):
+- BBA: 155 students placed, 75 companies visited, min 2.5 LPA, max 5 LPA, avg 3 LPA
+- BCA: 178 students placed, 115 companies visited, min 2.5 LPA, max 4.5 LPA, avg 3 LPA
+- B.Com: 92 students placed, 63 companies visited, min 2.2 LPA, max 4 LPA, avg 2.5 LPA
+- Recruiters include TCS, Amazon, Dell, IDFC, HDFC, and others
+- Placement cell organizes training, mock interviews, and aptitude prep
+
+CAMPUS FACILITIES:
+- Technology-enabled classrooms
+- Well-stocked library
+- Computer labs
+- Hostel facilities on campus
+- Student-centric campus with modern infrastructure
+
+STUDENT LIFE & CLUBS:
+- Finquisitive (Finance Club)
+- Marketing Club
+- R&D Club
+- NSS and social initiatives
+- Workshop on Entrepreneurship with NIESBUD
+- Industrial visits (e.g., Amar Ujala Press, Noida)
+- NEP Orientation & Sensitization programs
+
+CONTACT:
+- Website: https://www.gniotips.in
+- Address: Plot No. 7, Knowledge Park-II, Greater Noida, Gautam Buddh Nagar, UP-201310
+- Phone: 0120-2328214/15/16 | 1800 274 6969
+- Email: principal@gniotips.in
+- Nearest Metro: Aqua Line - Knowledge Park II station
+- Near Pari Chowk, Greater Noida
+`;
+
+const RAUSHAN_INFO = `
+DEVELOPER / CREATOR OF THIS CHATBOT:
+- Name: Raushan Raj
+- Role: Student developer and creator of this Autonomous chatbot
+- College: GNIOT GIPS (GNIOT Institute of Professional Studies), Greater Noida
+- Course: Currently pursuing his studies at GNIOT GIPS
+- Project: Built "Autonomous" — an AI-powered college assistant chatbot for GNIOT GIPS
+- Purpose: To help students, parents and visitors get quick, accurate information about GNIOT GIPS
+- Tech used: Google Gemini API (gemini-3.5-flash-lite) + Tailwind CSS + plain HTML/CSS/JS
+- Built for: A college hackathon project at GNIOT GIPS
+- Skills shown in this project: Frontend development, API integration, AI tool-calling / function calling, prompt engineering
+- This is a student project made by him from scratch for the hackathon
+
+ANSWERING RULES for "who made you / who is Raushan Raj / who built this / who is the developer":
+- Always proudly and warmly credit Raushan Raj as the creator.
+- Say he is a student at GNIOT GIPS who built this chatbot for a college hackathon.
+- Mention the tech: built with Google Gemini API and Tailwind CSS.
+- Keep it short (2-3 lines), friendly and respectful — like a proud friend introducing him.
+- Never say you were made by Google, OpenAI or any AI company. You were BUILT by Raushan Raj using Google's Gemini API as the underlying model.
+`;
+
+const tools = [
+  {
+    name: "get_time",
+    description: "get current time and date",
+    parameters: { type: Type.OBJECT, properties: {} }
+  },
+  {
+    name: "calculate",
+    description: "do math, input is expression like 2+2 or (5*3)/2",
+    parameters: {
+      type: Type.OBJECT,
+      properties: { expression: { type: Type.STRING } },
+      required: ["expression"]
+    }
+  },
+  {
+    name: "wiki_search",
+    description: "search wikipedia for facts/people/places (for questions NOT about GNIOT GIPS)",
+    parameters: {
+      type: Type.OBJECT,
+      properties: { query: { type: Type.STRING } },
+      required: ["query"]
+    }
+  }
+];
+
+async function useTool(name, args) {
+  console.log("using", name, args);
+
+  if (name == "get_time") {
+    return new Date().toString();
+  }
+
+  if (name == "calculate") {
+    if (!/^[0-9+\-*/(). ]+$/.test(args.expression)) return "invalid math";
+    try {
+      return String(eval(args.expression));
+    } catch (e) {
+      return "cant calculate";
+    }
+  }
+
+  if (name == "wiki_search") {
+    try {
+      var url = "https://en.wikipedia.org/api/rest_v1/page/summary/" + encodeURIComponent(args.query);
+      var r = await fetch(url);
+      if (!r.ok) return "nothing on wikipedia";
+      var d = await r.json();
+      return d.extract || "no info";
+    } catch (e) {
+      return "wikipedia error";
+    }
+  }
+
+  return "unknown tool";
+}
+
+function addMsg(text, who) {
+  var row = document.createElement("div");
+  row.className = "m flex gap-2 max-w-[85%] " + (who == "me" ? "ml-auto flex-row-reverse" : "mr-auto");
+
+  if (who == "bot") {
+    var icon = document.createElement("div");
+    icon.className = "w-7 h-7 rounded-full bg-[#1f1f1f] text-yellow-400 flex items-center justify-center text-[11px] shrink-0 mt-1";
+    icon.innerHTML = '<i class="fas fa-graduation-cap"></i>';
+    row.appendChild(icon);
+  }
+
+  var b = document.createElement("div");
+  b.className = "px-3.5 py-2 rounded-2xl text-sm whitespace-pre-wrap break-words " +
+    (who == "me"
+      ? "bg-yellow-400 text-black rounded-tr-sm font-medium"
+      : "bg-[#1a1a1a] border border-[#2a2a2a] text-gray-200 rounded-tl-sm");
+  b.textContent = text;
+  row.appendChild(b);
+  chat.appendChild(row);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function showTool(name) {
+  var t = document.createElement("div");
+  t.className = "m ml-9 text-[11px] text-yellow-400 flex items-center gap-1";
+  t.innerHTML = '<i class="fas fa-cog fa-spin"></i> using ' + name + '...';
+  chat.appendChild(t);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function dots() {
+  var d = document.createElement("div");
+  d.id = "dots";
+  d.className = "m flex gap-2 mr-auto";
+  d.innerHTML =
+    '<div class="w-7 h-7 rounded-full bg-[#1f1f1f] text-yellow-400 flex items-center justify-center text-[11px] shrink-0 mt-1">' +
+      '<i class="fas fa-graduation-cap"></i>' +
+    '</div>' +
+    '<div class="px-3 py-2.5 rounded-2xl bg-[#1a1a1a] border border-[#2a2a2a] rounded-tl-sm">' +
+      '<span class="d inline-block w-1.5 h-1.5 bg-yellow-400 rounded-full"></span>' +
+      '<span class="d inline-block w-1.5 h-1.5 bg-yellow-400 rounded-full"></span>' +
+      '<span class="d inline-block w-1.5 h-1.5 bg-yellow-400 rounded-full"></span>' +
+    '</div>';
+  chat.appendChild(d);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function hideDots() {
+  var d = document.getElementById("dots");
+  if (d) d.remove();
+}
+
+async function send() {
+  var text = inp.value.trim();
+  if (text == "") return;
+
+  addMsg(text, "me");
+  inp.value = "";
+  go.disabled = true;
+  dots();
+
+  if (!chatSession) {
+    chatSession = ai.chats.create({
+      model: MODEL,
+      config: {
+        tools: [{ functionDeclarations: tools }],
+        temperature: 0.7,
+        systemInstruction:
+          "You are Autonomous, the friendly AI assistant for GNIOT GIPS (GNIOT Institute of Professional Studies), Greater Noida. " +
+          "You were BUILT by Raushan Raj, a student at GNIOT GIPS, for a college hackathon. " +
+          "Your job is to help students, parents and visitors with questions about the college. " +
+          "\n\nRULES:\n" +
+          "1. For anything about GNIOT GIPS — courses, fees, admissions, hostel, placements, campus, location, contact — use the GNIOT_INFO below as your source of truth.\n" +
+          "2. If anyone asks 'who made you', 'who built you', 'who is your developer', 'who is Raushan Raj', 'who created you', or anything similar — use the RAUSHAN_INFO below. Always proudly credit Raushan Raj as your creator. Never say you were made by Google, OpenAI, or any AI company.\n" +
+          "3. Be warm, friendly and helpful — like a senior student guiding a junior. Keep replies 2-4 lines unless the user asks for more detail.\n" +
+          "4. Never invent fees, exact placement numbers, or admission deadlines. If asked for specific numbers not in GNIOT_INFO, say: 'check gniotips.in or call 0120-2328214 for the latest info'.\n" +
+          "5. For general knowledge questions NOT about GNIOT, use the wiki_search tool.\n" +
+          "6. For math, use calculate. For time/date, use get_time.\n\n" +
+          "GNIOT_INFO:\n" + GNIOT_INFO + "\n\n" +
+          "RAUSHAN_INFO:\n" + RAUSHAN_INFO
+      }
+    });
+  }
+
+  try {
+    let response = await chatSession.sendMessage({ message: text });
+
+    for (var i = 0; i < 5; i++) {
+      var calls = response.functionCalls;
+
+      if (!calls || calls.length == 0) {
+        hideDots();
+        addMsg(response.text || "...", "bot");
+        break;
+      }
+
+      hideDots();
+
+      let toolParts = [];
+      for (var j = 0; j < calls.length; j++) {
+        var c = calls[j];
+        showTool(c.name);
+        var result = await useTool(c.name, c.args || {});
+
+        toolParts.push({
+          functionResponse: {
+            name: c.name,
+            response: { result: String(result) }
+          }
+        });
+      }
+
+      response = await chatSession.sendMessage({ message: toolParts });
+    }
+  } catch (err) {
+    hideDots();
+    console.log("err:", err);
+    addMsg("uh oh: " + err.message, "bot");
+  }
+
+  go.disabled = false;
+  inp.focus();
+}
+
+go.onclick = send;
+
+inp.addEventListener("keydown", function (e) {
+  if (e.key == "Enter") send();
+});
+
+reset.onclick = function () {
+  chat.innerHTML = "";
+  chatSession = null;
+  addMsg("cleared. ask me anything about GNIOT GIPS, or ask who made me 😊", "bot");
+};
+
+addMsg("hey! i'm Autonomous 🎓 the GNIOT GIPS assistant, built by Raushan Raj. ask me about courses, fees, hostel, placements — or anything about the college!", "bot");
+</script>
+</body>
+</html>
